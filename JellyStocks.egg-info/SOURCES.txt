@@ -1,3 +1,4 @@
+LICENSE
 README.md
 setup.py
 JellyStocks.egg-info/PKG-INFO
@@ -8,5 +9,6 @@ jellystocks/__init__.py
 jellystocks/cost_functions.py
 jellystocks/data_downloader.py
 jellystocks/jellyfish_search.py
+jellystocks/main.py
 jellystocks/portfolio.py
 jellystocks/utils.py

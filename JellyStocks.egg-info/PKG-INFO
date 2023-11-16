@@ -1,7 +1,9 @@
 Metadata-Version: 2.1
 Name: JellyStocks
 Version: 1.0.1
+License: BSD-2-Clause
 Description-Content-Type: text/markdown
+License-File: LICENSE
 
 
 JellyStock

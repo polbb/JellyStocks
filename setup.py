@@ -1,8 +1,13 @@
 from setuptools import setup
 
+# Read dependencies from requirements.txt
+with open('requirements.txt') as f:
+    dependencies = f.read().splitlines()
+
 setup(
     name='JellyStocks',
-    version='1.0.1',
+    version='1.0',
+    install_requires=dependencies,
     license='BSD-2-Clause',
     long_description="""
 JellyStock
