@@ -91,35 +91,98 @@ class Portfolio:
         """
         self.data = download_data(self.tickers, self.start_date, self.end_date)
 
-    def optimize(self, optimizer: JellyfishOptimizer):
+    def optimize(self, optimizer: JellyfishOptimizer, num_runs: int = 1):
         """
-        Optimizes the portfolio using the Jellyfish Search optimization algorithm.
+        Optimizes the portfolio using the Jellyfish Search optimization algorithm for multiple runs.
 
         Parameters
         ----------
         optimizer : JellyfishOptimizer
             An instance of the JellyfishOptimizer class.
-        """
-        # The optimizer is expected to have a method like 'optimize' which takes
-        # necessary parameters and returns the optimized weights.
-        best_solution, best_cost, iterations, evaluations, elapsed_time, cost_over_time = optimizer.optimize(
-            self._log_returns,
-            self._annual_cov_matrix,
-            self._dimension,
-            self.lower_bound,
-            self.upper_bound,
-            self.annualized_expected_returns,
-            self.portfolio_standard_deviation,
-            self.risk_free_rate
-        )
+        num_runs : int, optional
+            Number of optimization runs, by default 1.
 
-        # Update portfolio attribues
-        self._weights = best_solution
-        self.sharpe_ratio = abs(best_cost)
+        Returns
+        -------
+        Tuple
+            A tuple containing the best solution and its parameters across all runs,
+            as well as a list of dictionaries representing all solutions found during each run.
+        """
+        best_global_solution = None
+        best_global_cost = float('inf')  # Initialize with a large value
+        best_global_iterations = 0
+        best_global_evaluations = 0
+        best_global_elapsed_time = 0
+        best_global_cost_over_time = []
+        all_solutions_history = []
+
+        for run in range(num_runs):
+            # Perform optimization for each run
+            best_solution, best_cost, iterations, evaluations, elapsed_time, cost_over_time = optimizer.optimize(
+                self._log_returns,
+                self._annual_cov_matrix,
+                self._dimension,
+                self.lower_bound,
+                self.upper_bound,
+                self.risk_free_rate
+            )
+
+            # Update the best solution if the current run has a lower cost
+            if best_cost < best_global_cost:
+                best_global_solution = abs(best_solution)
+                best_global_cost = best_cost
+                best_global_iterations = iterations
+                best_global_evaluations = evaluations
+                best_global_elapsed_time = elapsed_time
+                best_global_cost_over_time = cost_over_time
+
+            # Save the current run's solution to the history as a dictionary
+            current_run_dict = {
+                'solution': abs(best_solution),
+                'cost': best_cost,
+                'iterations': iterations,
+                'evaluations': evaluations,
+                'elapsed_time': elapsed_time,
+                'cost_over_time': cost_over_time
+            }
+            all_solutions_history.append(current_run_dict)
+
+        # Update portfolio attributes with the best solution
+        self._weights = best_global_solution
+        self.sharpe_ratio = best_global_cost
         self.calculate_portfolio_expected_returns()
         self.calculate_portfolio_standard_deviation()
 
-        return best_solution, best_cost, iterations, evaluations, elapsed_time, cost_over_time
+        return best_global_solution, best_global_cost, best_global_iterations, best_global_evaluations, best_global_elapsed_time, best_global_cost_over_time, all_solutions_history
+
+    # def optimize(self, optimizer: JellyfishOptimizer):
+    #     """
+    #     Optimizes the portfolio using the Jellyfish Search optimization algorithm.
+    #
+    #     Parameters
+    #     ----------
+    #     optimizer : JellyfishOptimizer
+    #         An instance of the JellyfishOptimizer class.
+    #     """
+    #     # The optimizer is expected to have a method like 'optimize' which takes
+    #     # necessary parameters and returns the optimized weights.
+    #     best_solution, best_cost, iterations, evaluations, elapsed_time, cost_over_time = optimizer.optimize(
+    #         self._log_returns,
+    #         self._annual_cov_matrix,
+    #         self._dimension,
+    #         self.lower_bound,
+    #         self.upper_bound,
+    #         self.risk_free_rate
+    #     )
+    #
+    #     # Update portfolio attributes
+    #     self._weights = abs(best_solution)
+    #     print(f'abs best sol:{abs(best_solution)}')
+    #     self.sharpe_ratio = abs(best_cost)
+    #     self.calculate_portfolio_expected_returns()
+    #     self.calculate_portfolio_standard_deviation()
+    #
+    #     return best_solution, best_cost, iterations, evaluations, elapsed_time, cost_over_time
 
     # def optimize_copy(self, optimizer, num_iterations=1):
     #     best_solution = None
@@ -146,7 +209,7 @@ class Portfolio:
     #             best_cost = current_cost
     #
     #     return best_solution, best_cost
-
+    #
     # def copy(self):
     #     # Create a new Portfolio instance and copy the relevant attributes
     #     portfolio_copy = Portfolio(self.tickers, self.start_date, self.end_date,
@@ -252,6 +315,7 @@ class Portfolio:
         # Add portfolio composition to the ticker_weight_table
         for ticker, weight in zip(self.tickers, self._weights):
             ticker_weight_table.append([ticker, weight])
+            # ticker_weight_table.append([ticker, f"{abs(weight) * 100:.4f}%"])
 
         # Add performance metrics to the metrics_table with percentage formatting
         metrics_table.append(["Optimized Sharpe Ratio", f"{abs(self.sharpe_ratio):.4f}"])
@@ -261,17 +325,11 @@ class Portfolio:
         # Print the tables
         print("Portfolio Composition:")
         headers = ["Ticker", "Weight"]
-        print(tabulate(ticker_weight_table, headers, tablefmt="fancy_grid"))
+        print(tabulate(ticker_weight_table, headers, tablefmt="simple"))
 
         print("\nPerformance Metrics:")
         headers = ["Metric", "Value"]
-        print(tabulate(metrics_table, headers, tablefmt="fancy_grid"))
-
-    # Example usage:
-    # portfolio.display_optimization_results()
-
-    # Example usage:
-    # portfolio.display_optimization_results()
+        print(tabulate(metrics_table, headers, tablefmt="simple"))
 
     # Example usage:
     # portfolio.display_optimization_results()
@@ -295,7 +353,7 @@ class Portfolio:
     #     print(f"Annualized Volatility: {self.portfolio_standard_deviation * 100:.4f}%")
 
     def calculate_sharpe_ratio(self):
-        print(f'passing risk free from portfolio: {self.risk_free_rate}')
+        # print(f'passing risk-free from portfolio: {self.risk_free_rate}')
         self.sharpe_ratio = utils.calculate_portfolio_sharpe_ratio(
             self._weights,
             self._log_returns,

@@ -2,8 +2,9 @@ import numpy as np
 import utils
 
 
-def negative_portfolio_sharpe_ratio(weights, lower_bound, upper_bound, log_returns, cov_matrix, expected_returns=None,
-                                    std_deviation=None, risk_free=utils.get_risk_free()):
+def negative_portfolio_sharpe_ratio(weights, lower_bound, upper_bound, log_returns, cov_matrix,
+                                    risk_free=utils.get_risk_free()):
+
     port_return = utils.calculate_portfolio_expected_returns(weights, log_returns)
     port_std_dev = utils.calculate_portfolio_standard_deviation(weights, cov_matrix)
     sharpe = -(port_return - risk_free) / port_std_dev

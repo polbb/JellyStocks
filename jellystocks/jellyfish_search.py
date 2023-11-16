@@ -92,8 +92,7 @@ class JellyfishOptimizer:
 
         self.set_cost_function(cost_function)
 
-    def jellyfish_search(self, log_returns, cov_matrix, dimension, lower_bound, upper_bound, expected_returns,
-                         std_deviation, risk_free):
+    def jellyfish_search(self, log_returns, cov_matrix, dimension, lower_bound, upper_bound, risk_free):
         # Implement the optimization logic here
         # Use expected returns and covariance matrix for the optimization
         # Return the optimized portfolio weights
@@ -109,8 +108,7 @@ class JellyfishOptimizer:
         jellyfishes = initialization_constraint(n_pop, dimension, upper_bound, lower_bound)
 
         jellyfishes = [repair_weights(jellyfish, lower_bound, upper_bound) for jellyfish in jellyfishes]
-        pop_cost = [cost_function(jellyfish, lower_bound, upper_bound, log_returns, cov_matrix, expected_returns,
-                                  std_deviation, risk_free
+        pop_cost = [cost_function(jellyfish, lower_bound, upper_bound, log_returns, cov_matrix, risk_free
                                   ) for jellyfish in jellyfishes]
         # pop_cost = [cost_function(jellyfishes[i], lower_bound, upper_bound) for i in range(n_pop)]
 
@@ -131,9 +129,7 @@ class JellyfishOptimizer:
                     newsol = jellyfishes[i] + np.random.rand(dimension) * (best_sol - 3 * np.random.rand() * meanvl)
                     newsol = repair_weights(newsol, lower_bound, upper_bound)
                     # print('after js: ->>>', newsol) #pol tets
-                    newsol_cost = cost_function(newsol, lower_bound, upper_bound, log_returns, cov_matrix,
-                                                expected_returns, std_deviation, risk_free
-                                                )
+                    newsol_cost = cost_function(newsol, lower_bound, upper_bound, log_returns, cov_matrix, risk_free)
 
                     if newsol_cost < pop_cost[i]:
                         jellyfishes[i] = newsol
@@ -159,9 +155,7 @@ class JellyfishOptimizer:
 
                     newsol = repair_weights(newsol, lower_bound, upper_bound)
                     # print('newsol swarm movement: ', newsol ) #pol test
-                    newsol_cost = cost_function(newsol, lower_bound, upper_bound, log_returns, cov_matrix,
-                                                expected_returns, std_deviation, risk_free
-                                                )
+                    newsol_cost = cost_function(newsol, lower_bound, upper_bound, log_returns, cov_matrix, risk_free)
 
                     if newsol_cost < pop_cost[i]:
                         jellyfishes[i] = newsol
@@ -176,15 +170,15 @@ class JellyfishOptimizer:
             if self.early_termination:
 
                 if it >= 500:  # reduce this to a smaller number to hit early stopping more easily
-                    if abs(convergence[it] - convergence[it - 300]) < 1e-35:  # increased this for quicker
-                        # convergence detection
+                    if abs(convergence[it] - convergence[it - 300]) < 1e-5:  # increased this for quicker
+                        # convergence detection. This value depends on how many decimal points I wan to consider on
+                        # sharpe ratio results
                         break
         best_cost = convergence[-1]
         evaluations = it * n_pop
         return best_sol, best_cost, evaluations, convergence, it
 
-    def optimize(self, log_returns, cov_matrix, dimension, lower_bound, upper_bound, expected_returns, std_deviation,
-                 risk_free):
+    def optimize(self, log_returns, cov_matrix, dimension, lower_bound, upper_bound, risk_free):
         # print(f'printing within optimize in jellyfish_search')
         # Running the JS optimizer
         start_time = time.time()
@@ -193,8 +187,6 @@ class JellyfishOptimizer:
                                                                                                   dimension,
                                                                                                   lower_bound,
                                                                                                   upper_bound,
-                                                                                                  expected_returns,
-                                                                                                  std_deviation,
                                                                                                   risk_free)
         elapsed_time = time.time() - start_time
 

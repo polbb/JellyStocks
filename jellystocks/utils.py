@@ -68,10 +68,9 @@ def calculate_portfolio_standard_deviation(weights, cov_matrix):
 
 def calculate_portfolio_sharpe_ratio(weights, log_returns, cov_matrix,
                                      risk_free=get_risk_free()):
-
-    print(f'utils sharpe being used')
-    print(f'risk free: {risk_free}')
-    print(f'weights: {weights}')
+    # print(f'utils sharpe being used')
+    # print(f'risk free: {risk_free}')
+    # print(f'weights: {weights}')
     port_return = calculate_portfolio_expected_returns(weights, log_returns)
     port_std_dev = calculate_portfolio_standard_deviation(weights, cov_matrix)
     sharpe = (port_return - risk_free) / port_std_dev
