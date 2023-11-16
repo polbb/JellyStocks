@@ -3,6 +3,7 @@ from setuptools import setup
 setup(
     name='JellyStocks',
     version='1.0.1',
+    license='BSD-2-Clause',
     long_description="""
 JellyStock
 ==========
