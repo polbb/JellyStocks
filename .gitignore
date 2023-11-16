@@ -2,3 +2,5 @@
 
 # Ignore main.py in jellystocks directory
 jellystocks/main.py
+jellystocks/notes.md
+jellystocks/to-do.md
