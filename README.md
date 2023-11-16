@@ -60,4 +60,3 @@ You can find the original code [here](https://uk.mathworks.com/matlabcentral/fil
 ## License
 
 This Python package, including the modifications, is licensed under the BSD-2-Clause License. See the [LICENSE](LICENSE) file for details.
-
