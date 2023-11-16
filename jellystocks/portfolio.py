@@ -242,7 +242,7 @@ class Portfolio:
         self.annualized_expected_returns = annualized_expected_return
 
     def calculate_portfolio_standard_deviation(self):
-        std = utils.calculate_portfolio_standard_deviation(self._weights, self._annual_cov_matrix)
+        std = utils.calculate_portfolio_standard_deviation(abs(self._weights), self._annual_cov_matrix)
         self.portfolio_standard_deviation = std
 
     def display_optimization_results(self):
