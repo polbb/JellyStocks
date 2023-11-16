@@ -1,0 +1,4 @@
+# .gitignore
+
+# Ignore main.py in jellystocks directory
+jellystocks/main.py
