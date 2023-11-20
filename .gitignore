@@ -5,7 +5,8 @@ jellystocks/main.py
 jellystocks/notes.md
 jellystocks/to-do.md
 jellystocks/data.csv
-/logo/
-/JellyStocks.egg-info/
-/build/
-/dist/
+logo/
+JellyStocks.egg-info/
+*.egg-info/
+build/
+dist/
