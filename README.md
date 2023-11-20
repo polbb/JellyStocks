@@ -1,7 +1,7 @@
 [![License](https://img.shields.io/badge/license-BSD--2--Clause-blue.svg)](LICENSE)
 
-JellyStock
-==========
+JellyStocks
+===========
 
 JellyStock is a Python library for optimizing stock portfolios using the Jellyfish Search optimization algorithm. It 
 allows you to create and manage portfolios of stocks, download historical stock data, and find the optimal portfolio 

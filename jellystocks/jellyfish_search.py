@@ -6,6 +6,29 @@ from cost_functions import COST_FUNCTIONS
 
 
 def initialization_constraint(num_pop, dimension, upper_bound, lower_bound):
+    """
+     Initialize a population with constraints to ensure respect for boundaries.
+
+     Parameters
+     ----------
+     num_pop : int
+         Number of individuals in the population.
+     dimension : int
+         Dimensionality of the individuals.
+     upper_bound : float or array-like
+         Upper bounds for each dimension.
+     lower_bound : float or array-like
+         Lower bounds for each dimension.
+
+     Returns
+     -------
+     numpy.ndarray
+         Initial population respecting the specified boundaries.
+
+     Notes
+     -----
+     This function uses a logistic map to generate the initial population while avoiding forbidden values.
+     """
     # Constraints were added to the initialization of population (logistic map) to ensure initial pop respect
     # boundaries.
 
@@ -39,6 +62,23 @@ def initialization_constraint(num_pop, dimension, upper_bound, lower_bound):
 
 
 def repair_weights(weights, lower_bound, upper_bound):
+    """
+    Repair weights to ensure they meet specified bounds.
+
+    Parameters
+    ----------
+    weights : numpy.ndarray
+        Array of weights to be repaired.
+    lower_bound : float or array-like
+        Lower bounds for each weight.
+    upper_bound : float or array-like
+        Upper bounds for each weight.
+
+    Returns
+    -------
+    numpy.ndarray
+        Repaired weights respecting the specified bounds.
+    """
     n = len(weights)
     lower_bound = np.array(lower_bound if len(lower_bound) > 1 else lower_bound * np.ones(n))
     upper_bound = np.array(upper_bound if len(upper_bound) > 1 else upper_bound * np.ones(n))
@@ -74,6 +114,20 @@ def repair_weights(weights, lower_bound, upper_bound):
 
 
 class JellyfishOptimizer:
+    """
+    Initialize the JellyfishOptimizer.
+
+    Parameters
+    ----------
+    num_of_jellyfishes : int, optional
+        Number of jellyfishes in the optimization, by default 8.
+    cost_function : str, optional
+        Name of the cost function to be used, by default 'sharpe'.
+    num_of_iterations : int, optional
+        Number of optimization iterations, by default 2000.
+    early_termination : bool, optional
+        Whether to enable early termination, by default False.
+    """
     def __init__(self,
                  num_of_jellyfishes=8,
                  cost_function='sharpe',
@@ -93,6 +147,29 @@ class JellyfishOptimizer:
         self.set_cost_function(cost_function)
 
     def jellyfish_search(self, log_returns, cov_matrix, dimension, lower_bound, upper_bound, risk_free):
+        """
+        Optimize using the Jellyfish Search algorithm.
+
+        Parameters
+        ----------
+        log_returns : numpy.ndarray
+            Logarithmic returns of the portfolio assets.
+        cov_matrix : numpy.ndarray
+            Covariance matrix of the portfolio assets.
+        dimension : int
+            Dimensionality of the optimization.
+        lower_bound : float or array-like
+            Lower bounds for the portfolio weights.
+        upper_bound : float or array-like
+            Upper bounds for the portfolio weights.
+        risk_free : float
+            Risk-free rate for the optimization.
+
+        Returns
+        -------
+        tuple
+            Tuple containing the best solution, best cost, number of evaluations, convergence history, and iterations.
+        """
         # Implement the optimization logic here
         # Use expected returns and covariance matrix for the optimization
         # Return the optimized portfolio weights
@@ -179,6 +256,30 @@ class JellyfishOptimizer:
         return best_sol, best_cost, evaluations, convergence, it
 
     def optimize(self, log_returns, cov_matrix, dimension, lower_bound, upper_bound, risk_free):
+        """
+        Optimize the portfolio using the Jellyfish Search algorithm.
+
+        Parameters
+        ----------
+        log_returns : numpy.ndarray
+            Logarithmic returns of the portfolio assets.
+        cov_matrix : numpy.ndarray
+            Covariance matrix of the portfolio assets.
+        dimension : int
+            Dimensionality of the optimization.
+        lower_bound : float or array-like
+            Lower bounds for the portfolio weights.
+        upper_bound : float or array-like
+            Upper bounds for the portfolio weights.
+        risk_free : float
+            Risk-free rate for the optimization.
+
+        Returns
+        -------
+        tuple
+            Tuple containing the best solution, best cost, number of iterations, number of evaluations, elapsed time,
+            and the convergence history.
+        """
         # print(f'printing within optimize in jellyfish_search')
         # Running the JS optimizer
         start_time = time.time()
@@ -194,16 +295,50 @@ class JellyfishOptimizer:
 
     @staticmethod
     def get_risk_free():
+        """
+        Get the risk-free rate for the optimization.
+
+        Returns
+        -------
+        float
+            The risk-free rate.
+        """
         return utils.get_risk_free()
 
     @staticmethod
     def validate_number_of_jellyfishes(num_of_jellyfishes):
+        """
+        Validate the number of jellyfishes.
+
+        Parameters
+        ----------
+        num_of_jellyfishes : int
+            Number of jellyfishes for the optimization.
+
+        Raises
+        ------
+        ValueError
+            If the number of jellyfishes is not an integer or is less than 2.
+        """
         if not isinstance(num_of_jellyfishes, int):
             raise ValueError('Number of Jellyfishes must be an integer')
         elif num_of_jellyfishes < 2:
             raise ValueError('Minimum number of Jellyfishes is 2')
 
     def set_cost_function(self, cost_function):
+        """
+        Set the cost function for the optimization.
+
+        Parameters
+        ----------
+        cost_function : str
+            Name of the cost function.
+
+        Raises
+        ------
+        ValueError
+            If the cost function name is unknown.
+        """
         if cost_function in COST_FUNCTIONS:
             self.cost_fn = COST_FUNCTIONS[cost_function]
         else:

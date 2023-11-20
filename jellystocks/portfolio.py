@@ -1,6 +1,5 @@
 # portfolio.py
 from tabulate import tabulate
-
 from data_downloader import download_data
 import pandas as pd
 import numpy as np
@@ -153,77 +152,8 @@ class Portfolio:
         self.calculate_portfolio_expected_returns()
         self.calculate_portfolio_standard_deviation()
 
-        return best_global_solution, best_global_cost, best_global_iterations, best_global_evaluations, best_global_elapsed_time, best_global_cost_over_time, all_solutions_history
-
-    # def optimize(self, optimizer: JellyfishOptimizer):
-    #     """
-    #     Optimizes the portfolio using the Jellyfish Search optimization algorithm.
-    #
-    #     Parameters
-    #     ----------
-    #     optimizer : JellyfishOptimizer
-    #         An instance of the JellyfishOptimizer class.
-    #     """
-    #     # The optimizer is expected to have a method like 'optimize' which takes
-    #     # necessary parameters and returns the optimized weights.
-    #     best_solution, best_cost, iterations, evaluations, elapsed_time, cost_over_time = optimizer.optimize(
-    #         self._log_returns,
-    #         self._annual_cov_matrix,
-    #         self._dimension,
-    #         self.lower_bound,
-    #         self.upper_bound,
-    #         self.risk_free_rate
-    #     )
-    #
-    #     # Update portfolio attributes
-    #     self._weights = abs(best_solution)
-    #     print(f'abs best sol:{abs(best_solution)}')
-    #     self.sharpe_ratio = abs(best_cost)
-    #     self.calculate_portfolio_expected_returns()
-    #     self.calculate_portfolio_standard_deviation()
-    #
-    #     return best_solution, best_cost, iterations, evaluations, elapsed_time, cost_over_time
-
-    # def optimize_copy(self, optimizer, num_iterations=1):
-    #     best_solution = None
-    #     best_cost = float('inf')
-    #
-    #     for iteration in range(num_iterations):
-    #         # Create a copy of the current Portfolio object
-    #         portfolio_copy = self.copy()
-    #
-    #         # Your optimization logic here
-    #         current_solution, current_cost, _, _, _, _ = optimizer.optimize(
-    #             portfolio_copy._log_returns,
-    #             portfolio_copy._annual_cov_matrix,
-    #             portfolio_copy._dimension,
-    #             portfolio_copy.lower_bound,
-    #             portfolio_copy.upper_bound,
-    #             portfolio_copy.annualized_expected_returns,
-    #             portfolio_copy.portfolio_standard_deviation,
-    #             portfolio_copy.risk_free_rate
-    #         )
-    #
-    #         if current_cost < best_cost:
-    #             best_solution = current_solution
-    #             best_cost = current_cost
-    #
-    #     return best_solution, best_cost
-    #
-    # def copy(self):
-    #     # Create a new Portfolio instance and copy the relevant attributes
-    #     portfolio_copy = Portfolio(self.tickers, self.start_date, self.end_date,
-    #                                self.lower_bound, self.upper_bound, self.risk_free_rate)
-    #
-    #     # Copy other attributes as needed
-    #     portfolio_copy._weights = self._weights.copy()
-    #     portfolio_copy._log_returns = self._log_returns.copy()
-    #     portfolio_copy._annual_cov_matrix = self._annual_cov_matrix.copy()
-    #     portfolio_copy.sharpe_ratio = self.sharpe_ratio
-    #     portfolio_copy.annualized_expected_returns = self.annualized_expected_returns
-    #     portfolio_copy.portfolio_standard_deviation = self.portfolio_standard_deviation
-    #
-    #     return portfolio_copy
+        return (best_global_solution, best_global_cost, best_global_iterations, best_global_evaluations,
+                best_global_elapsed_time, best_global_cost_over_time, all_solutions_history)
 
     def display_portfolio(self):
         """
@@ -330,27 +260,6 @@ class Portfolio:
         print("\nPerformance Metrics:")
         headers = ["Metric", "Value"]
         print(tabulate(metrics_table, headers, tablefmt="simple"))
-
-    # Example usage:
-    # portfolio.display_optimization_results()
-
-    # # Include additional metrics and graphical representations as needed
-    #
-    # print("\nOptimization Details:")
-    # # Provide details like number of iterations, computational time, etc.
-    #
-    # # Optional: Include comparison with benchmark and historical performance
-
-    # def display_optimization_results(self):
-    #     print("Optimized Portfolio Composition:")
-    #     for ticker, weight in zip(self.tickers, self._weights):
-    #         print(f"{ticker}: {weight}")
-    #         # print(f"{ticker}: {weight * 100:.2f}%")
-    #
-    #     print("\nPerformance Metrics:")
-    #     print(f"Optimized Sharpe Ratio: {abs(self.sharpe_ratio):.4f}")
-    #     print(f"Annualized Expected Return: {self.annualized_expected_returns * 100:.4f}%")
-    #     print(f"Annualized Volatility: {self.portfolio_standard_deviation * 100:.4f}%")
 
     def calculate_sharpe_ratio(self):
         # print(f'passing risk-free from portfolio: {self.risk_free_rate}')
