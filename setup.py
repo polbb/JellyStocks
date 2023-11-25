@@ -6,7 +6,8 @@ with open('requirements.txt') as f:
 
 setup(
     name='JellyStocks',
-    version='1.0.3',
+    version='1.0.4',
+    packages=['jellystocks'],  # to exclude other dir that can be auto recognized as packages
     install_requires=dependencies,
     license='BSD-2-Clause',
     long_description="""
